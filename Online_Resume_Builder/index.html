@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Create and manage your resumes online."><title>ResumeCraft — CV Manager</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head><body>
+<section id="authView" class="auth-screen"><div class="auth-card"><a class="brand" href="#"><span class="brand-mark">R</span><span>Resume<span class="brand-light">Craft</span></span></a><p class="eyebrow">YOUR CAREER WORKSPACE</p><h1 id="authTitle">Welcome back</h1><p class="auth-subtitle" id="authSubtitle">Sign in to access your saved resumes.</p><form id="authForm"><label class="field">Email address<input id="authEmail" type="email" placeholder="you@example.com" required></label><label class="field">Password<input id="authPassword" type="password" placeholder="At least 6 characters" minlength="6" required></label><label class="field" id="confirmWrap" hidden>Confirm password<input id="authConfirm" type="password" placeholder="Repeat your password" minlength="6"></label><button class="btn btn-primary btn-wide" id="authSubmit" type="submit">Sign in <span>→</span></button></form><p class="auth-switch"><span id="authSwitchText">New to ResumeCraft?</span> <button type="button" id="authSwitch">Create an account</button></p><p class="auth-note" id="authNote">Use Supabase configuration for secure online accounts.</p></div></section>
+<div id="appView" hidden><header class="topbar">
+  <a class="brand" href="#" aria-label="ResumeCraft home"><span class="brand-mark">R</span><span class="brand-name">Resume<span class="brand-light">Craft</span><small>CAREER STUDIO</small></span></a>
+  <nav class="main-nav" aria-label="Main navigation">
+    <button class="nav-link active" data-page="dashboard" type="button"><span class="nav-icon">▦</span> Dashboard</button>
+    <button class="nav-link" data-page="create" type="button"><span class="nav-icon">＋</span> Create CV</button>
+    <button class="nav-link" data-page="edit" type="button"><span class="nav-icon">✎</span> Edit CV</button>
+  </nav>
+  <div class="user-actions"><div class="user-avatar" id="userAvatar">U</div><div class="user-meta"><span class="user-label">SIGNED IN AS</span><span id="userEmail"></span></div><span class="user-divider"></span><button class="theme-toggle" id="themeToggle" type="button" title="Toggle dark mode">◐</button><button class="logout-btn" id="logoutBtn" type="button" title="Log out"><span>↗</span> Log out</button></div>
+</header>
+<main id="dashboardPage" class="app-shell" hidden><section class="dash-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h1>My Resumes</h1><p class="intro-copy">All your saved CVs in one place. Open any resume to edit or download it.</p></div><button class="btn btn-primary" id="newCvBtn" type="button">＋ Create New CV</button></section><section class="analytics-grid" id="analyticsGrid"><article class="analytics-card"><span>Total CVs</span><strong id="totalCvCount">0</strong><small>Saved in your workspace</small></article><article class="analytics-card"><span>Last updated</span><strong id="lastUpdatedCount">—</strong><small>Most recent CV activity</small></article><article class="analytics-card"><span>Templates</span><strong>03</strong><small>Ready to download</small></article></section><section id="resumeGrid" class="resume-grid"></section><div id="emptyState" class="empty-state" hidden><div class="empty-icon">＋</div><h2>No resumes yet</h2><p>Create your first professional CV. You can edit it anytime.</p><button class="btn btn-primary" id="emptyCreateBtn" type="button">Create your first CV</button></div></main>
+<main id="editLibraryPage" class="app-shell" hidden><section class="dash-heading"><div><p class="eyebrow">YOUR CV LIBRARY</p><h1>Choose a CV to edit</h1><p class="intro-copy">Select a saved CV name to open its editor.</p></div></section><section id="editNameList" class="edit-name-list"></section><div id="editEmptyState" class="empty-state" hidden><div class="empty-icon">✎</div><h2>No saved CVs</h2><p>Create a CV first. It will appear here by its custom name.</p><button class="btn btn-primary" id="editCreateBtn" type="button">Create a CV</button></div></main>
+<main id="editorPage" class="app-shell" hidden><section class="intro"><div><p class="eyebrow" id="editorEyebrow">CV BUILDER</p><h1 id="editorTitle">Create your <span>new CV.</span></h1><p class="intro-copy" id="editorDescription">Add your details, preview your CV and save it to your dashboard.</p></div><div class="step-pill"><span class="step-dot"></span> Your resume workspace</div></section>
+    <div class="workspace">
+      <section class="editor-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">RESUME DETAILS</p><h2>Tell us about yourself</h2></div>
+          <span class="required-note">* Required fields</span>
+        </div>
+
+        <form id="resumeForm" novalidate>
+          <section class="form-section">
+            <div class="section-title"><span class="section-icon">00</span><div><h3>Name this CV</h3><p>A private label to find this resume later</p></div></div>
+            <label class="field full">Custom CV name <span>*</span><input id="cvTitle" maxlength="150" placeholder="e.g. Frontend Developer CV" required></label>
+          </section>
+          <section class="form-section">
+            <div class="section-title"><span class="section-icon">01</span><div><h3>Personal information</h3><p>How employers can reach you</p></div></div>
+            <div class="field-grid">
+              <label class="field full">Full name <span>*</span><input id="fullName" name="fullName" placeholder="e.g. Alex Morgan" required maxlength="80"></label>
+              <label class="field">Email address <span>*</span><input id="email" name="email" type="email" placeholder="alex@email.com" required></label>
+              <label class="field">Phone number<input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" pattern="[+0-9()\-\s]{7,20}" placeholder="+880 1XXX-XXXXXX" title="Use digits and an optional country code"></label>
+              <label class="field">Date of birth<input id="dateOfBirth" name="dateOfBirth" type="date" autocomplete="bday"></label>
+              <label class="field full">Location<input id="location" name="location" placeholder="Dhaka, Bangladesh"></label>
+              <label class="field full">Professional headline<input id="headline" name="headline" placeholder="e.g. Junior Frontend Developer"></label>
+              <label class="field full">Profile photo <span class="optional-label">JPG or PNG · max 1 MB</span><input id="profilePhoto" type="file" accept="image/png,image/jpeg,image/webp"></label>
+              <label class="field">LinkedIn profile<input id="linkedin" name="linkedin" type="url" inputmode="url" placeholder="https://linkedin.com/in/username"></label>
+              <label class="field">GitHub / Portfolio<input id="portfolio" name="portfolio" type="url" inputmode="url" placeholder="https://github.com/username"></label>
+              <label class="field full">Professional summary<textarea id="summary" name="summary" rows="3" placeholder="Write 2–3 sentences about your strengths and career goals."></textarea></label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-title"><span class="section-icon">02</span><div><h3>Education</h3><p>Your academic background</p></div></div>
+            <div id="educationList" class="repeat-list"></div>
+            <button class="add-btn" type="button" id="addEducation">＋ Add education</button>
+          </section>
+
+          <section class="form-section">
+            <div class="section-title"><span class="section-icon">03</span><div><h3>Experience</h3><p>Work, internship or project experience</p></div></div>
+            <div id="experienceList" class="repeat-list"></div>
+            <button class="add-btn" type="button" id="addExperience">＋ Add experience</button>
+          </section>
+
+          <section class="form-section">
+            <div class="section-title"><span class="section-icon">04</span><div><h3>Skills & additional details</h3><p>Highlight what you can do</p></div></div>
+            <label class="field full">Skills <span class="optional-label">Separate with commas</span><input id="skills" placeholder="HTML, CSS, JavaScript, Communication"></label>
+            <label class="field full">Projects<textarea id="projects" rows="3" placeholder="Project name — your role, tools used and result."></textarea></label>
+            <label class="field full">Certifications & achievements<textarea id="certifications" rows="3" placeholder="Certificate name — issuing organization, year."></textarea></label>
+            <label class="field full">Additional information<textarea id="additional" rows="2" placeholder="Awards, volunteering or other relevant details."></textarea></label>
+          </section>
+
+          <div class="form-footer">
+            <p id="formMessage" class="form-message" aria-live="polite"></p>
+            <button class="btn btn-primary btn-wide" type="submit">Update preview <span>→</span></button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="preview-panel">
+        <div class="preview-toolbar">
+          <div><p class="eyebrow">LIVE PREVIEW</p><h2>Your resume</h2></div>
+          <button class="btn btn-dark" id="pdfBtn" type="button">↓ Download PDF</button>
+        </div>
+        <div class="template-picker"><div class="template-picker-heading"><div><p class="eyebrow">CHOOSE YOUR LOOK</p><h3>Resume templates</h3></div><span>Preview only · choose before download</span></div><div class="template-options"><button class="template-option active" data-template="classic" type="button"><span class="template-thumb thumb-classic"><i></i><i></i><i></i></span><strong>01 · Classic</strong><small>Clean & professional</small></button><button class="template-option" data-template="modern" type="button"><span class="template-thumb thumb-modern"><i></i><i></i><i></i></span><strong>02 · Modern</strong><small>Bold sidebar layout</small></button><button class="template-option" data-template="creative" type="button"><span class="template-thumb thumb-creative"><i></i><i></i><i></i></span><strong>03 · Elegant</strong><small>Editorial & refined</small></button></div></div>
+        <div class="paper-wrap">
+          <article id="resumePreview" class="resume-paper template-classic">
+            <header class="resume-header">
+              <img id="previewPhoto" class="resume-profile-photo" alt="Profile photo" hidden><h1 id="previewName">Your Name</h1>
+              <p id="previewHeadline" class="resume-headline">Your professional headline</p>
+              <div id="previewContact" class="contact-line">Email • Phone • Location</div>
+            </header>
+            <section class="resume-block" id="summaryBlock"><h2>PROFILE</h2><p id="previewSummary" class="muted-preview">Your professional summary will appear here.</p></section>
+            <section class="resume-block" id="educationBlock"><h2>EDUCATION</h2><div id="previewEducation"><p class="muted-preview">Your education details will appear here.</p></div></section>
+            <section class="resume-block" id="experienceBlock"><h2>EXPERIENCE</h2><div id="previewExperience"><p class="muted-preview">Your experience details will appear here.</p></div></section>
+            <section class="resume-block" id="skillsBlock"><h2>SKILLS</h2><div id="previewSkills" class="skill-preview muted-preview">Your skills will appear here.</div></section>
+            <section class="resume-block" id="projectsBlock"><h2>PROJECTS</h2><p id="previewProjects" class="muted-preview">Your projects will appear here.</p></section>
+            <section class="resume-block" id="certificationsBlock"><h2>CERTIFICATIONS</h2><p id="previewCertifications" class="muted-preview">Your certifications will appear here.</p></section>
+            <section class="resume-block" id="additionalBlock"><h2>ADDITIONAL</h2><p id="previewAdditional" class="muted-preview">Projects and achievements will appear here.</p></section>
+          </article>
+        </div>
+        <section class="ats-card" aria-live="polite"><div class="ats-head"><div><p class="eyebrow">QUICK CHECK</p><h3>CV readiness score</h3></div><strong id="atsScore">0%</strong></div><div class="ats-track"><span id="atsBar"></span></div><p id="atsFeedback">Add your details to receive a basic CV completeness check.</p><small>This is a rule-based checklist, not an official ATS guarantee.</small></section><p class="preview-hint"><span>✦</span> Changes appear in your preview as you type. Drafts are saved automatically in this browser.</p>
+      </aside>
+    </div>
+<div class="editor-actions"><button class="btn btn-ghost" id="backDashboardBtn" type="button">← Back to dashboard</button><span class="save-status" id="saveStatus">Not saved yet</span><button class="btn btn-primary" id="saveCvBtn" type="button">Save CV</button></div><footer class="page-footer">ResumeCraft <span>•</span> Create your next opportunity.</footer></main></div>
+  <template id="educationTemplate">
+    <div class="repeat-card">
+      <button class="remove-btn" type="button" aria-label="Remove education">×</button>
+      <div class="field-grid">
+        <label class="field">Degree / qualification<input data-field="degree" placeholder="BSc in Computer Science"></label>
+        <label class="field">Institution<input data-field="institution" placeholder="University name"></label>
+        <label class="field">Graduation year<input data-field="year" type="number" inputmode="numeric" min="1950" max="2100" step="1" placeholder="2026"></label>
+        <label class="field">Result (optional)<input data-field="result" placeholder="CGPA 3.80"></label>
+      </div>
+    </div>
+  </template>
+  <template id="experienceTemplate">
+    <div class="repeat-card">
+      <button class="remove-btn" type="button" aria-label="Remove experience">×</button>
+      <div class="field-grid">
+        <label class="field">Position / role<input data-field="position" placeholder="Frontend Developer Intern"></label>
+        <label class="field">Company / organization<input data-field="company" placeholder="Company name"></label>
+        <label class="field">Start date<input data-field="startDate" type="month"></label>
+        <label class="field">End date<input data-field="endDate" type="month"></label>
+        <label class="field">Description<input data-field="description" placeholder="Describe your responsibility or achievement"></label>
+      </div>
+    </div>
+  </template>
+
+<div id="toast" class="toast" role="status"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script src="config.js"></script><script src="script.js"></script></body></html>
